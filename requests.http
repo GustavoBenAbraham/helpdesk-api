@@ -1,0 +1,46 @@
+### Use com a extensão REST Client do VS Code
+@base = http://localhost:8080
+
+### Cadastrar cliente
+POST {{base}}/api/auth/register
+Content-Type: application/json
+
+{"name":"Maria Silva","email":"maria@example.com","password":"MinhaSenha123!"}
+
+### Identidade autenticada
+GET {{base}}/api/auth/me
+Authorization: Basic maria@example.com MinhaSenha123!
+
+### Criar chamado; copie o id retornado para a variável abaixo
+POST {{base}}/api/tickets
+Authorization: Basic maria@example.com MinhaSenha123!
+Content-Type: application/json
+
+{"title":"Falha no pagamento","description":"Recebo erro ao finalizar o pedido.","priority":"HIGH"}
+
+@ticketId = substitua-pelo-id-retornado
+
+### Filtrar chamados
+GET {{base}}/api/tickets?status=OPEN&priority=HIGH&page=0&size=20
+Authorization: Basic maria@example.com MinhaSenha123!
+
+### Atender (execute a aplicação com perfil demo)
+PATCH {{base}}/api/tickets/{{ticketId}}/status
+Authorization: Basic agente@demo.local DemoSenha123!
+Content-Type: application/json
+
+{"status":"IN_PROGRESS"}
+
+### Comentar
+POST {{base}}/api/tickets/{{ticketId}}/comments
+Authorization: Basic maria@example.com MinhaSenha123!
+Content-Type: application/json
+
+{"message":"O problema começou hoje pela manhã."}
+
+### Histórico
+GET {{base}}/api/tickets/{{ticketId}}/history
+Authorization: Basic maria@example.com MinhaSenha123!
+
+### Saúde
+GET {{base}}/actuator/health
